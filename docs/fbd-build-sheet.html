@@ -1,0 +1,435 @@
+<title>EDI · Foglio di montaggio FBD — 3 PLC Zelio</title>
+<style>
+  :root{
+    --paper:#F1F3F0; --surface:#FFFFFF; --surface2:#F7F8F6;
+    --ink:#14202E; --muted:#5B6B7A; --faint:#8695A2; --line:#D9DEE2;
+    --blue:#1E5A96; --accent:#2C9C4A;
+    --c-in:#1E5A96; --c-num:#69747F; --c-math:#B06B1F; --c-comp:#0C7A83;
+    --c-mux:#6A46A6; --c-logic:#455568; --c-time:#A63A58; --c-out:#2C9C4A; --c-net:#C0468A;
+    --shadow:0 1px 2px rgba(20,32,46,.06),0 2px 8px rgba(20,32,46,.05);
+    --mono:ui-monospace,"Cascadia Code","SF Mono",Menlo,Consolas,monospace;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0B131C; --surface:#111C27; --surface2:#0E1822;
+      --ink:#E6ECF1; --muted:#93A3B2; --faint:#6C7C8B; --line:#22323F;
+      --blue:#5AA0E0; --accent:#49C46B;
+      --c-in:#5AA0E0; --c-num:#8A98A6; --c-math:#E0983F; --c-comp:#2BB6C0;
+      --c-mux:#A583E0; --c-logic:#8598AC; --c-time:#E06A88; --c-out:#49C46B; --c-net:#E56FB0;
+      --shadow:0 1px 2px rgba(0,0,0,.3),0 2px 10px rgba(0,0,0,.25);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#F1F3F0; --surface:#FFFFFF; --surface2:#F7F8F6;
+    --ink:#14202E; --muted:#5B6B7A; --faint:#8695A2; --line:#D9DEE2;
+    --blue:#1E5A96; --accent:#2C9C4A;
+    --c-in:#1E5A96; --c-num:#69747F; --c-math:#B06B1F; --c-comp:#0C7A83;
+    --c-mux:#6A46A6; --c-logic:#455568; --c-time:#A63A58; --c-out:#2C9C4A; --c-net:#C0468A;
+    --shadow:0 1px 2px rgba(20,32,46,.06),0 2px 8px rgba(20,32,46,.05);
+  }
+  :root[data-theme="dark"]{
+    --paper:#0B131C; --surface:#111C27; --surface2:#0E1822;
+    --ink:#E6ECF1; --muted:#93A3B2; --faint:#6C7C8B; --line:#22323F;
+    --blue:#5AA0E0; --accent:#49C46B;
+    --c-in:#5AA0E0; --c-num:#8A98A6; --c-math:#E0983F; --c-comp:#2BB6C0;
+    --c-mux:#A583E0; --c-logic:#8598AC; --c-time:#E06A88; --c-out:#49C46B; --c-net:#E56FB0;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 2px 10px rgba(0,0,0,.25);
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);
+    line-height:1.5;-webkit-font-smoothing:antialiased}
+  .wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+
+  /* ---- top bar ---- */
+  header.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--paper) 88%,transparent);
+    backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+  .top .wrap{display:flex;align-items:center;gap:16px;height:56px}
+  .brand{display:flex;align-items:center;gap:10px;font-weight:650;letter-spacing:-.01em}
+  .brand .dot{width:11px;height:11px;border-radius:3px;background:var(--accent);
+    box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent)}
+  nav.plcnav{margin-left:auto;display:flex;gap:4px}
+  nav.plcnav a{font-family:var(--mono);font-size:12.5px;text-decoration:none;color:var(--muted);
+    padding:6px 11px;border-radius:7px;border:1px solid transparent}
+  nav.plcnav a:hover{color:var(--ink);background:var(--surface2);border-color:var(--line)}
+  nav.plcnav a:focus-visible{outline:2px solid var(--blue);outline-offset:2px}
+
+  /* ---- hero ---- */
+  .hero{padding:40px 0 20px}
+  .eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);font-weight:600}
+  h1{font-size:clamp(26px,4vw,38px);line-height:1.08;margin:12px 0 8px;letter-spacing:-.02em;
+    text-wrap:balance;max-width:20ch}
+  .lede{color:var(--muted);max-width:64ch;font-size:15.5px}
+  .hw{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+  .hw span{font-family:var(--mono);font-size:12px;background:var(--surface);border:1px solid var(--line);
+    padding:5px 10px;border-radius:7px;color:var(--ink);box-shadow:var(--shadow)}
+  .hw b{color:var(--blue)}
+
+  /* ---- legend ---- */
+  .legend{margin:26px 0 8px;padding:16px 18px;background:var(--surface);border:1px solid var(--line);
+    border-radius:12px;box-shadow:var(--shadow)}
+  .legend h3{margin:0 0 4px;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint)}
+  .legend p{margin:0 0 12px;font-size:13.5px;color:var(--muted)}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .chip{font-family:var(--mono);font-size:11.5px;padding:4px 9px;border-radius:20px;font-weight:600;
+    color:#fff;white-space:nowrap}
+  @media (prefers-color-scheme:dark){.chip{color:#0B131C}}
+  :root[data-theme="dark"] .chip{color:#0B131C}
+  :root[data-theme="light"] .chip{color:#fff}
+
+  /* ---- plc section ---- */
+  section.plc{margin:42px 0;scroll-margin-top:72px}
+  .plchead{display:flex;align-items:flex-start;gap:14px;border-top:2px solid var(--ink);padding-top:14px}
+  .plcnum{font-family:var(--mono);font-size:34px;font-weight:700;line-height:.9;color:var(--blue);
+    font-variant-numeric:tabular-nums}
+  .plctitle h2{margin:0;font-size:20px;letter-spacing:-.01em}
+  .plctitle .role{color:var(--muted);font-size:14px;margin-top:2px}
+
+  .iosum{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin:16px 0 4px}
+  .iocard{background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;box-shadow:var(--shadow)}
+  .iocard h4{margin:0;font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:8px 12px;
+    border-bottom:1px solid var(--line);color:#fff}
+  .iocard.ai h4{background:var(--c-in)} .iocard.ao h4{background:var(--c-out)}
+  .iocard.q h4{background:var(--c-logic)}
+  :root[data-theme="dark"] .iocard h4{color:#0B131C}
+  @media (prefers-color-scheme:dark){.iocard h4{color:#0B131C}}
+  :root[data-theme="light"] .iocard h4{color:#fff}
+  .iocard table{width:100%;border-collapse:collapse;font-family:var(--mono);font-size:12px}
+  .iocard td{padding:5px 12px;border-bottom:1px solid var(--line)}
+  .iocard tr:last-child td{border-bottom:0}
+  .iocard td:first-child{color:var(--faint);width:64px}
+  .iocard td:last-child{color:var(--ink)}
+
+  /* ---- nets ---- */
+  .net{margin-top:22px}
+  .netttl{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:3px}
+  .netttl .id{font-family:var(--mono);font-size:12px;color:var(--accent);font-weight:700}
+  .netttl h3{margin:0;font-size:15.5px;letter-spacing:-.01em}
+  .netdesc{font-size:13px;color:var(--muted);margin:0 0 12px;max-width:80ch}
+  .formula{font-family:var(--mono);font-size:12.5px;background:var(--surface2);border:1px dashed var(--line);
+    color:var(--ink);padding:6px 10px;border-radius:7px;display:inline-block;margin:0 0 12px}
+
+  .flow{display:flex;align-items:stretch;gap:0;overflow-x:auto;padding:4px 2px 12px}
+  .flow::-webkit-scrollbar{height:8px}
+  .flow::-webkit-scrollbar-thumb{background:var(--line);border-radius:8px}
+  .arrow{display:flex;align-items:center;color:var(--faint);font-size:18px;padding:0 6px;flex:0 0 auto}
+  .blk{flex:0 0 auto;min-width:150px;max-width:210px;background:var(--surface);border:1px solid var(--line);
+    border-radius:10px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+  .blk .bh{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:7px 10px;
+    border-bottom:1px solid var(--line)}
+  .blk .btype{font-family:var(--mono);font-size:10.5px;font-weight:700;letter-spacing:.03em;
+    text-transform:uppercase}
+  .blk .bout{font-family:var(--mono);font-size:11.5px;font-weight:700;color:var(--ink)}
+  .blk .bb{padding:8px 10px;display:flex;flex-direction:column;gap:6px;flex:1}
+  .blk .param{font-family:var(--mono);font-size:11.5px;color:var(--ink);background:var(--surface2);
+    border-radius:6px;padding:3px 7px;align-self:flex-start}
+  .blk .ins{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+  .blk .ins li{font-family:var(--mono);font-size:11px;color:var(--muted);display:flex;gap:5px;line-height:1.35}
+  .blk .ins li::before{content:"←";color:var(--faint)}
+  .blk .note{font-size:11px;color:var(--faint);font-style:italic}
+  /* left accent per category */
+  .blk[data-c]{border-left:3px solid var(--line)}
+  .blk[data-c="in"]{border-left-color:var(--c-in)} .blk[data-c="num"]{border-left-color:var(--c-num)}
+  .blk[data-c="math"]{border-left-color:var(--c-math)} .blk[data-c="comp"]{border-left-color:var(--c-comp)}
+  .blk[data-c="mux"]{border-left-color:var(--c-mux)} .blk[data-c="logic"]{border-left-color:var(--c-logic)}
+  .blk[data-c="time"]{border-left-color:var(--c-time)} .blk[data-c="out"]{border-left-color:var(--c-out)}
+  .blk[data-c="net"]{border-left-color:var(--c-net)}
+  .blk[data-c] .btype{color:var(--c-logic)}
+  .blk[data-c="in"] .btype{color:var(--c-in)} .blk[data-c="num"] .btype{color:var(--c-num)}
+  .blk[data-c="math"] .btype{color:var(--c-math)} .blk[data-c="comp"] .btype{color:var(--c-comp)}
+  .blk[data-c="mux"] .btype{color:var(--c-mux)} .blk[data-c="time"] .btype{color:var(--c-time)}
+  .blk[data-c="out"] .btype{color:var(--c-out)} .blk[data-c="net"] .btype{color:var(--c-net)}
+  .blk[data-c="out"]{background:color-mix(in srgb,var(--c-out) 8%,var(--surface))}
+  .blk[data-c="net"] .bh{background:color-mix(in srgb,var(--c-net) 9%,var(--surface))}
+
+  .tmpl{border-left:3px solid var(--accent);background:var(--surface2);border-radius:0 8px 8px 0;
+    padding:8px 12px;margin-top:6px;font-size:12.5px;color:var(--muted)}
+  .tmpl b{color:var(--ink);font-family:var(--mono);font-size:12px}
+
+  footer{margin:50px 0 30px;padding-top:18px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+  footer code{font-family:var(--mono);background:var(--surface2);padding:1px 6px;border-radius:5px;font-size:12px}
+  a.src{color:var(--blue)}
+  @media (max-width:640px){.plcnum{font-size:26px}.blk{min-width:140px}}
+</style>
+
+<header class="top"><div class="wrap">
+  <div class="brand"><span class="dot"></span>EDI · FBD Build Sheet</div>
+  <nav class="plcnav">
+    <a href="#legend">Legenda</a>
+    <a href="#plc1">PLC 1</a><a href="#plc2">PLC 2</a><a href="#plc3">PLC 3</a>
+  </nav>
+</div></header>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="eyebrow">ZelioSoft 2 · Function Block Diagram</div>
+    <h1>Elettrodeionizzatore — montaggio blocco per blocco</h1>
+    <p class="lede">Un foglio per ogni PLC: <b>ingressi</b> a sinistra, <b>logica</b> in mezzo, <b>uscite</b> a destra.
+      Ogni blocco dichiara il <b>tipo esatto</b> della palette, i <b>parametri</b> e <b>da dove arrivano gli ingressi</b>
+      (per nome). Trascrivilo così com'è in ZelioSoft2.</p>
+    <div class="hw">
+      <span>×3 identici</span>
+      <span><b>SR3B261BD</b> · base 6 AI + 10 relè</span>
+      <span><b>SR3XT43BD</b> · +2 AI +2 AO</span>
+      <span><b>SR3NET01BD</b> · Ethernet/Modbus TCP → Vijeo</span>
+    </div>
+  </div>
+
+  <div class="legend" id="legend">
+    <h3>Come leggere un blocco</h3>
+    <p>Ogni scheda = un blocco da posare sul foglio FBD. Riga alto: <b>tipo palette</b> (colore = categoria) e
+      <b>nome dell'uscita</b>. Corpo: <b>parametri</b> e la lista <b>← ingresso</b> (collegamento da fare, per nome del segnale
+      o del terminale). I segnali con lo stesso nome vanno cablati insieme. <code style="font-family:var(--mono)">RETE</code>
+      = variabile Modbus scambiata con SCADA.</p>
+    <div class="chips">
+      <span class="chip" style="background:var(--c-in)">ANALOG / DIGITAL IN</span>
+      <span class="chip" style="background:var(--c-num)">COSTANTE (NUM)</span>
+      <span class="chip" style="background:var(--c-math)">GAIN · ADD · SUB</span>
+      <span class="chip" style="background:var(--c-comp)">COMP (comparatore)</span>
+      <span class="chip" style="background:var(--c-mux)">MUX · PWM</span>
+      <span class="chip" style="background:var(--c-logic)">AND · OR · NOT</span>
+      <span class="chip" style="background:var(--c-time)">TIMER · SET/RESET</span>
+      <span class="chip" style="background:var(--c-out)">USCITA Q / AQ</span>
+      <span class="chip" style="background:var(--c-net)">RETE ↔ SCADA</span>
+    </div>
+  </div>
+
+  <div id="app"></div>
+
+  <footer>
+    <p><b>Loop di regolazione:</b> Zelio FBD non ha un PID completo → i loop sono <b>P + feed-forward</b>
+      (blocchi GAIN/SUB/ADD) o <b>on/off a isteresi</b> (COMP). Se la tua versione espone l'AFB “PID”, puoi
+      sostituire il ramo GAIN con esso. Nessuna divisione analogica: i rapporti si fanno con GAIN ×N + SUB.</p>
+    <p><b>Da tarare</b> (prossimo passo): scalatura 0–10 V ↔ unità fisiche di ogni sensore e i valori
+      <code>Kp Kff Kh</code>, soglie e isteresi. I parametri qui sono simbolici.</p>
+    <p>Fonti componenti: <a class="src" href="https://www.se.com/us/en/product/SR3XT43BD/">SR3XT43BD (2 AI + 2 AO)</a> ·
+      <a class="src" href="https://www.se.com/us/en/product/SR3NET01BD/">SR3NET01BD (Ethernet)</a></p>
+  </footer>
+</div>
+
+<script>
+const PLCS = [
+{
+  id:"plc1", n:"1", role:"Idraulica — Pressioni & Livelli",
+  io:{
+    ai:[["Base 1","PT_ConcIn"],["Base 2","PT_DilIn"],["Base 3","PT_ConcOut"],["Base 4","PT_DilOut"],
+        ["Base 5","LT_Feed"],["Base 6","LT_Dil"],["Est. 1","LT_ERS"],["Est. 2","LT_Conc"]],
+    q:[["Q1","Pompa (Motore)"],["Q2","Allarme pressione"],["Q3","Allarme livello"],["Q4–QA","— riserva —"]]
+  },
+  nets:[
+   {id:"1.1", ttl:"Gradiente di pressione  Pdil ≥ Pconc", desc:"Requisito tassativo anti-contaminazione. Due sottrazioni + due comparatori; se entrambi i gradienti sono positivi → PRESS_OK.",
+    formula:"PRESS_OK = (PT_DilIn ≥ PT_ConcIn) AND (PT_DilOut ≥ PT_ConcOut)",
+    blocks:[
+      {t:"sub",out:"d1",p:"A − B",in:["AN PT_DilIn","AN PT_ConcIn"]},
+      {t:"comp",out:"bP1",p:"A ≥ B · isteresi",in:["d1","NUM 0"]},
+      {t:"sub",out:"d2",p:"A − B",in:["AN PT_DilOut","AN PT_ConcOut"]},
+      {t:"comp",out:"bP2",p:"A ≥ B · isteresi",in:["d2","NUM 0"]},
+      {t:"and",out:"PRESS_OK",p:"",in:["bP1","bP2"]},
+      {t:"netout",out:"PRESS_OK",p:"→ SCADA + PLC3",in:["PRESS_OK"]},
+      {t:"not",out:"pAlarm",p:"",in:["PRESS_OK"]},
+      {t:"q",out:"Q2",p:"Allarme pressione",in:["pAlarm"]}
+    ]},
+   {id:"1.2", ttl:"Livelli 4 taniche — soglia bassa / alta", desc:"Per ciascun serbatoio due comparatori con isteresi. Feed_LOW blocca la pompa; i vari x_HIGH vanno al PLC3 / allarme.",
+    formula:"x_LOW = LT_x < Lmin   ·   x_HIGH = LT_x > Lmax",
+    blocks:[
+      {t:"comp",out:"x_LOW",p:"A < B · isteresi",in:["AN LT_x","NUM Lmin"]},
+      {t:"comp",out:"x_HIGH",p:"A > B · isteresi",in:["AN LT_x","NUM Lmax"]},
+      {t:"netout",out:"x_LOW / x_HIGH",p:"→ SCADA",in:["x_LOW","x_HIGH"]}
+    ],
+    tmpl:"Ripeti il blocco per <b>x = Feed · Dil · ERS · Conc</b> (8 comparatori totali). Usa gli AN degli 8 canali della tabella I/O."},
+   {id:"1.3", ttl:"Consenso pompa", desc:"La pompa parte solo su comando SCADA, con Feed non vuoto e nessuna tanica di destinazione piena.",
+    formula:"Pompa = cmd_Pump AND (NOT Feed_LOW) AND (NOT dest_full)",
+    blocks:[
+      {t:"or",out:"dest_full",p:"",in:["Dil_HIGH","Conc_HIGH","ERS_HIGH"]},
+      {t:"not",out:"nFeed",p:"",in:["Feed_LOW"]},
+      {t:"not",out:"nFull",p:"",in:["dest_full"]},
+      {t:"netin",out:"cmd_Pump",p:"← SCADA",in:["operatore"]},
+      {t:"and",out:"runPump",p:"3 ingressi",in:["cmd_Pump","nFeed","nFull"]},
+      {t:"q",out:"Q1",p:"Pompa (Motore)",in:["runPump"]}
+    ]}
+  ]
+},
+{
+  id:"plc2", n:"2", role:"Elettrico / Qualità — Tensione, Corrente & Conducibilità",
+  io:{
+    ai:[["Base 1","CT_Feed"],["Base 2","CT_Conc"],["Base 3","CT_Dil"],["Base 4","VT_Gen"],["Base 5","IT_Gen"],["Base 6, Est.","— riserva —"]],
+    ao:[["AQ1 (Est.)","SP_I — Corrente rich."],["AQ2 (Est.)","SP_V — Tensione rich."]],
+    q:[["Q1","Generatore ON/OFF"],["Q2","Allarme qualità (opz)"]]
+  },
+  nets:[
+   {id:"2.1", ttl:"Setpoint corrente  SP_I  (feedback qualità + feed-forward disturbo)", desc:"La corrente cresce se il diluito è poco puro (CT_Dil alta) e viene anticipata dal disturbo di conducibilità in alimentazione (CT_Feed). Cap a Imax, poi scelta auto/manuale.",
+    formula:"SP_I = SP_base + Kp·(CT_Dil − CT_tgt) + Kff·CT_Feed   (clamp Imax)",
+    blocks:[
+      {t:"sub",out:"ERRq",p:"A − B",in:["AN CT_Dil","NUM CT_tgt"]},
+      {t:"gain",out:"p",p:"Gain = Kp",in:["ERRq"]},
+      {t:"gain",out:"ff",p:"Gain = Kff",in:["AN CT_Feed"]},
+      {t:"add",out:"s1",p:"A + B",in:["p","ff"]},
+      {t:"add",out:"SP_I_calc",p:"A + B",in:["s1","NUM SP_base"]},
+      {t:"comp",out:"OverI",p:"A > B",in:["SP_I_calc","NUM Imax"]},
+      {t:"mux",out:"SP_I_cap",p:"sel=OverI · A→B",in:["A: SP_I_calc","B: NUM Imax","sel: OverI"]},
+      {t:"mux",out:"SP_I",p:"sel=Man_mode",in:["A: SP_I_cap","B: NET SP_I_man","sel: NET Man_mode"]},
+      {t:"aq",out:"AQ1",p:"SP_I → generatore",in:["SP_I"]}
+    ]},
+   {id:"2.2", ttl:"Setpoint tensione  SP_V", desc:"Tensione impostata dall'operatore (manuale) o valore di lavoro fisso (auto).",
+    formula:"SP_V = Man ? SP_V_set(SCADA) : SP_V_auto",
+    blocks:[
+      {t:"mux",out:"SP_V",p:"sel=Man_mode",in:["A: NUM SP_V_auto","B: NET SP_V_set","sel: NET Man_mode"]},
+      {t:"aq",out:"AQ2",p:"SP_V → generatore",in:["SP_V"]}
+    ]},
+   {id:"2.3", ttl:"Bit qualità  QUALITY_OK", desc:"Vero quando il diluito rispetta il target (con isteresi). Va al PLC3 per la linea di feedback.",
+    formula:"QUALITY_OK = CT_Dil ≤ CT_ok",
+    blocks:[
+      {t:"comp",out:"QUALITY_OK",p:"A ≤ B · isteresi",in:["AN CT_Dil","NUM CT_ok"]},
+      {t:"netout",out:"QUALITY_OK",p:"→ SCADA + PLC3",in:["QUALITY_OK"]}
+    ]},
+   {id:"2.4", ttl:"Generatore ON/OFF + sicurezza elettrodi", desc:"Il generatore si abilita solo con flusso ERS presente (ERS_OK dal PLC3) e senza sovratensione. V e A misurate vanno a SCADA per il display.",
+    formula:"Gen_ON = cmd_Gen AND ERS_OK AND (NOT OverV)",
+    blocks:[
+      {t:"comp",out:"OverV",p:"A > B",in:["AN VT_Gen","NUM Vmax"]},
+      {t:"not",out:"nOverV",p:"",in:["OverV"]},
+      {t:"netin",out:"ERS_OK",p:"← PLC3 (via SCADA)",in:["PLC3"]},
+      {t:"netin",out:"cmd_Gen",p:"← SCADA",in:["operatore"]},
+      {t:"and",out:"genRun",p:"3 ingressi",in:["cmd_Gen","ERS_OK","nOverV"]},
+      {t:"q",out:"Q1",p:"Generatore ON/OFF",in:["genRun"]},
+      {t:"netout",out:"V · A",p:"→ display SCADA",in:["AN VT_Gen","AN IT_Gen"]}
+    ]}
+  ]
+},
+{
+  id:"plc3", n:"3", role:"Attuazione — Valvole & Portate",
+  io:{
+    ai:[["Base 1","FT_Feed"],["Base 2","FT_Dil"],["Base 3","FT_Conc"],["Base 4","FT_Feedback"],["Base 5","FT_ERS"],["Base 6, Est.","— riserva —"]],
+    ao:[["AQ1 (Est.)","AY_InC — ampiezza"],["AQ2 (Est.)","AY_InD — ampiezza"]],
+    q:[["Q1","V_InD"],["Q2","V_InC"],["Q3","V_OutD"],["Q4","V_OutC"],["Q5","V_OutE"],["Q6","V_Feedback"],["Q7–QA","— riserva —"]]
+  },
+  nets:[
+   {id:"3.1", ttl:"Bilancio idraulico 600/30 → ampiezza valvola concentrato", desc:"Obiettivo Q_Dil ≈ 20·Q_Conc. GAIN ×20 sul concentrato, SUB per l'errore, GAIN Kh (P), somma del bias. Override: se PRESS_OK cade, MUX forza un'ampiezza ridotta di sicurezza. Poi auto/manuale.",
+    formula:"AY_InC = AY_bias + Kh·(FT_Dil − 20·FT_Conc)   ·   se ¬PRESS_OK → AY_safe",
+    blocks:[
+      {t:"gain",out:"q20",p:"Gain = 2000 (×20)",in:["AN FT_Conc"]},
+      {t:"sub",out:"ERR",p:"A − B",in:["AN FT_Dil","q20"]},
+      {t:"gain",out:"corr",p:"Gain = Kh",in:["ERR"]},
+      {t:"add",out:"AY_calc",p:"A + B",in:["corr","NUM AY_bias"]},
+      {t:"not",out:"nPress",p:"",in:["NET PRESS_OK"]},
+      {t:"mux",out:"AY_auto",p:"sel=nPress",in:["A: AY_calc","B: NUM AY_safe","sel: nPress"]},
+      {t:"mux",out:"AY_InC",p:"sel=Man_mode",in:["A: AY_auto","B: NET AY_InC_man","sel: NET Man_mode"]},
+      {t:"aq",out:"AQ1",p:"AY_InC → valvola",in:["AY_InC"]}
+    ]},
+   {id:"3.2", ttl:"Ampiezza valvola diluito  AY_InD", desc:"Di norma apertura ampia (linea ~600 L/h). Valore auto fisso o setpoint da SCADA.",
+    formula:"AY_InD = Man ? AY_InD_set(SCADA) : AY_InD_auto",
+    blocks:[
+      {t:"mux",out:"AY_InD",p:"sel=Man_mode",in:["A: NUM AY_InD_auto","B: NET AY_InD_set","sel: NET Man_mode"]},
+      {t:"aq",out:"AQ2",p:"AY_InD → valvola",in:["AY_InD"]}
+    ]},
+   {id:"3.3", ttl:"Linea di feedback (ricircolo)", desc:"Se la qualità è scarsa si apre il ricircolo e si chiude l'uscita diluito, così non si contamina la tanica. Costruzione mutuamente esclusiva.",
+    formula:"V_Feedback = ¬QUALITY_OK OR cmd_Feedback   ·   V_OutD = (QUALITY_OK AND ¬Dil_HIGH) OR cmd_OutD",
+    blocks:[
+      {t:"not",out:"badQ",p:"",in:["NET QUALITY_OK"]},
+      {t:"or",out:"vFB",p:"",in:["badQ","NET cmd_Feedback"]},
+      {t:"q",out:"Q6",p:"V_Feedback",in:["vFB"]},
+      {t:"not",out:"nDilH",p:"",in:["NET Dil_HIGH"]},
+      {t:"and",out:"autoD",p:"",in:["NET QUALITY_OK","nDilH"]},
+      {t:"or",out:"vOutD",p:"",in:["autoD","NET cmd_OutD"]},
+      {t:"q",out:"Q3",p:"V_OutD",in:["vOutD"]}
+    ]},
+   {id:"3.4", ttl:"Sicurezza ERS (flusso elettrodi sempre)", desc:"ERS_OK vero se c'è portata sufficiente sulla linea elettrodica → abilita il generatore (PLC2). La valvola ERS resta aperta in marcia.",
+    formula:"ERS_OK = FT_ERS ≥ ERS_min   ·   V_OutE = SystemRun OR cmd_OutE",
+    blocks:[
+      {t:"comp",out:"ERS_OK",p:"A ≥ B · isteresi",in:["AN FT_ERS","NUM ERS_min"]},
+      {t:"netout",out:"ERS_OK",p:"→ PLC2",in:["ERS_OK"]},
+      {t:"or",out:"vOutE",p:"",in:["NET SystemRun","NET cmd_OutE"]},
+      {t:"q",out:"Q5",p:"V_OutE",in:["vOutE"]}
+    ]},
+   {id:"3.5", ttl:"Consensi valvole ON/OFF", desc:"Le valvole ingresso seguono il comando manuale oppure l'automatico (impianto in marcia). L'uscita concentrato si chiude se la tanica è piena.",
+    formula:"V_InD/InC = cmd OR (Auto AND SystemRun)   ·   V_OutC = cmd OR (Auto AND SystemRun AND ¬Conc_HIGH)",
+    blocks:[
+      {t:"and",out:"autoRun",p:"",in:["NET Auto","NET SystemRun"]},
+      {t:"or",out:"vInD",p:"",in:["NET cmd_InD","autoRun"]},
+      {t:"q",out:"Q1",p:"V_InD",in:["vInD"]},
+      {t:"or",out:"vInC",p:"",in:["NET cmd_InC","autoRun"]},
+      {t:"q",out:"Q2",p:"V_InC",in:["vInC"]},
+      {t:"not",out:"nConcH",p:"",in:["NET Conc_HIGH"]},
+      {t:"and",out:"autoC",p:"",in:["autoRun","nConcH"]},
+      {t:"or",out:"vOutC",p:"",in:["NET cmd_OutC","autoC"]},
+      {t:"q",out:"Q4",p:"V_OutC",in:["vOutC"]}
+    ]},
+   {id:"3.6", ttl:"Verifica valvole (diagnostica)", desc:"Se una valvola è comandata ON ma la portata attesa non c'è per più di 5 s, scatta un allarme che resta latchato fino all'ack da SCADA.",
+    formula:"FAULT_OutD = SET quando  V_OutD AND (FT_Dil < soglia)  per > 5 s",
+    blocks:[
+      {t:"comp",out:"noflowD",p:"A < B",in:["AN FT_Dil","NUM soglia"]},
+      {t:"and",out:"cfD",p:"",in:["Q V_OutD (stato)","noflowD"]},
+      {t:"ton",out:"tD",p:"ritardo 5 s",in:["cfD"]},
+      {t:"sr",out:"FAULT_OutD",p:"SET=tD · RESET=ack",in:["S: tD","R: NET ack_OutD"]},
+      {t:"netout",out:"FAULT_OutD",p:"→ SCADA",in:["FAULT_OutD"]}
+    ],
+    tmpl:"Ripeti lo stesso schema per: <b>V_OutC ↔ FT_Conc</b> · <b>V_Feedback ↔ FT_Feedback</b> · <b>V_InC ↔ FT_Conc</b>."}
+  ]
+}
+];
+
+const CAT={in:["ANALOG / DIG IN","in"],ain:["ANALOG IN","in"],num:["COSTANTE","num"],
+  netin:["RETE ← SCADA","net"],netout:["RETE → SCADA","net"],
+  gain:["GAIN","math"],add:["ADD","math"],sub:["SUB","math"],
+  comp:["COMP","comp"],mux:["MUX","mux"],pwm:["PWM","mux"],
+  and:["AND","logic"],or:["OR","logic"],not:["NOT","logic"],
+  sr:["SET / RESET","time"],ton:["TIMER · TON","time"],
+  aq:["USCITA AQ","out"],q:["USCITA RELÈ","out"]};
+
+function el(tag,cls,html){const e=document.createElement(tag);if(cls)e.className=cls;if(html!=null)e.innerHTML=html;return e;}
+
+function blkNode(b){
+  const [label,cat]=CAT[b.t]||[b.t.toUpperCase(),"logic"];
+  const n=el("div","blk");n.dataset.c=cat;
+  const bh=el("div","bh");
+  bh.append(el("span","btype",label), el("span","bout",b.out||""));
+  n.append(bh);
+  const bb=el("div","bb");
+  if(b.p) bb.append(el("span","param",b.p));
+  if(b.in&&b.in.length){const ul=el("ul","ins");b.in.forEach(i=>ul.append(el("li",null,i)));bb.append(ul);}
+  n.append(bb);
+  return n;
+}
+
+function netNode(net){
+  const w=el("div","net");
+  const t=el("div","netttl");
+  t.append(el("span","id",net.id), el("h3",null,net.ttl));
+  w.append(t);
+  if(net.desc) w.append(el("p","netdesc",net.desc));
+  if(net.formula) w.append(el("div","formula",net.formula));
+  const flow=el("div","flow");
+  net.blocks.forEach((b,i)=>{
+    flow.append(blkNode(b));
+    if(i<net.blocks.length-1) flow.append(el("div","arrow","▸"));
+  });
+  w.append(flow);
+  if(net.tmpl) w.append(el("div","tmpl",net.tmpl));
+  return w;
+}
+
+function ioTable(title,cls,rows){
+  const c=el("div","iocard "+cls);
+  c.append(el("h4",null,title));
+  const tb=el("table");rows.forEach(r=>{const tr=el("tr");tr.append(el("td",null,r[0]),el("td",null,r[1]));tb.append(tr);});
+  c.append(tb);return c;
+}
+
+function plcNode(p){
+  const s=el("section","plc");s.id=p.id;
+  const h=el("div","plchead");
+  h.append(el("div","plcnum",p.n));
+  const tt=el("div","plctitle");tt.append(el("h2",null,"PLC "+p.n),el("div","role",p.role));
+  h.append(tt);s.append(h);
+  const io=el("div","iosum");
+  io.append(ioTable("Ingressi analogici","ai",p.io.ai));
+  if(p.io.ao) io.append(ioTable("Uscite analogiche","ao",p.io.ao));
+  io.append(ioTable("Uscite relè","q",p.io.q));
+  s.append(io);
+  p.nets.forEach(nt=>s.append(netNode(nt)));
+  return s;
+}
+
+const app=document.getElementById("app");
+PLCS.forEach(p=>app.append(plcNode(p)));
+</script>
